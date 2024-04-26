@@ -16,7 +16,7 @@ var userSchema = new mongoose.Schema(
             required: true,
             unique: true,
         },
-        mobile: {
+        phone: {
             type: String,
             required: true,
             unique: true,
@@ -67,9 +67,9 @@ userSchema.pre("save", async function (next) {
 
 // Check password
 userSchema.methods = {
-    isCorrectPassword: async function(password) {
+    isCorrectPassword: async function (password) {
         return bcrypt.compare(password, this.password);
-    }
-}
+    },
+};
 //Export the model
 module.exports = mongoose.model("User", userSchema);
