@@ -31,8 +31,8 @@ exports.show = async (req, res) => {
   });
 };
 exports.storeCategory = async (req, res) => {
-  const {name} = req.body;
-  const category ={
+  const { name } = req.body;
+  const category = {
     name: name,
   };
   await CategoryModel(category).save();
@@ -62,5 +62,19 @@ exports.products = async (req, res) => {
       docs: product,
       pages: await pagination(ProductModel, query, limit, page),
     },
+  });
+};
+
+exports.delCategory = async (req, res) => {
+  const { id } = req.params;
+  const result = await CategoryModel.findByIdAndDelete(id);
+  if (!result)
+    return res.status(404).json({
+      status: "failed",
+      message: "Không tìm thấy danh mục để xóa! ",
+    });
+  res.status(200).json({
+    tatus: "success",
+    message: "Xóa danh mục thành công!",
   });
 };

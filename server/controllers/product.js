@@ -62,3 +62,17 @@ exports.storeProduct = async (req, res) => {
     message: "Thêm mới san pham thành công!",
   });
 };
+
+exports.delProduct = async (req, res) => {
+  const {id} = req.params;
+  const result = await ProductModel.findByIdAndDelete(id);
+  if(!result) return res.status(404).json({
+    status: "failed",
+    message: "Không tìm thấy sản phẩm để xóa!",
+  })
+
+  res.status(200).json({
+    status: "success",
+    message: "Xóa sản phẩm thành công.",
+  })
+};
