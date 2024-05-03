@@ -8,6 +8,8 @@ router.post(
     productController.createProduct
 );
 router.get("/", productController.getProducts);
+router.put("/ratings", verifyAccessToken, productController.ratings);
+
 router.put(
     "/update/:pid",
     [verifyAccessToken, isAdmin],
