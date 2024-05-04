@@ -152,18 +152,15 @@ const ratings = asyncHandler(async (req, res) => {
         );
     } else {
         // Nếu người dùng chưa đánh giá sản phẩm, thêm mới đánh giá
-        await Product.findByIdAndUpdate(
-            pid,
-            {
-                $push: {
-                    ratings: {
-                        star,
-                        comment,
-                        postedBy: _id,
-                    },
+        await Product.findByIdAndUpdate(pid, {
+            $push: {
+                ratings: {
+                    star,
+                    comment,
+                    postedBy: _id,
                 },
-            }
-        );
+            },
+        });
     }
 
     // Tính toán lại tổng số điểm đánh giá trung bình của sản phẩm đã được cập nhật
@@ -173,13 +170,35 @@ const ratings = asyncHandler(async (req, res) => {
         (sum, item) => sum + +item.star,
         0
     );
-    updatedProduct.totalRatings = Math.round((sumRatings / ratingCount) * 10) / 10;
+    updatedProduct.totalRatings =
+        Math.round((sumRatings / ratingCount) * 10) / 10;
     await updatedProduct.save();
 
     // Trả về phản hồi thành công cùng với sản phẩm đã được cập nhật
     return res.status(200).json({
         status: true,
         updatedProduct,
+    });
+});
+
+// Upload Images
+const uploadImagesProduct = asyncHandler(async (req, res) => {
+    const { pid } = req.params;
+    if (!req.files) throw new Error("Missing inputs");
+    const response = await Product.findByIdAndUpdate(
+        pid,
+        {
+            $push: {
+                images: {
+                    $each: req.files.map((el) => el.path),
+                },
+            },
+        },
+        { new: true }
+    );
+    return res.status(200).json({
+        success: response ? true : false,
+        uploadedProduct: response ? response : "Cannot upload images product",
     });
 });
 
@@ -190,4 +209,5 @@ module.exports = {
     updateProduct,
     deleteProduct,
     ratings,
+    uploadImagesProduct,
 };

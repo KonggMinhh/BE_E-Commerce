@@ -234,6 +234,24 @@ const resetPassword = asyncHandler(async (req, res) => {
         mess: user ? "Update password !" : "Something went wrong !",
     });
 });
+
+// Update User Address
+
+const updateUserAddress = asyncHandler(async (req, res) => {
+    const { _id } = req.user;
+    if (!req.body.address) throw new Error("Missing inputs !");
+    const response = await User.findByIdAndUpdate(
+        _id,
+        { $push: { address: req.body.address } },
+        { new: true }
+    );
+    return res.status(200).json({
+        success: response ? true : false,
+        updateUser: response
+            ? response
+            : "Some thing went wrong ! Please try again later",
+    });
+});
 module.exports = {
     register,
     login,
@@ -246,4 +264,5 @@ module.exports = {
     deleteUser,
     updateUser,
     updateUserByAdmin,
+    updateUserAddress,
 };
