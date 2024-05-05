@@ -12,6 +12,7 @@ router.get("/", [verifyAccessToken, isAdmin], userController.getUsers);
 router.delete("/", [verifyAccessToken, isAdmin], userController.deleteUser);
 router.put("/current", verifyAccessToken, userController.updateUser);
 router.put("/address", verifyAccessToken, userController.updateUserAddress);
+router.put("/cart", verifyAccessToken, userController.updateCart);
 router.put(
     "/:uid",
     [verifyAccessToken, isAdmin],
