@@ -1,5 +1,6 @@
 const mongoose = require("mongoose"); // Erase if already required
 const bcrypt = require("bcrypt");
+const crypto = require("crypto");
 // Declare the Schema of the Mongo model
 var userSchema = new mongoose.Schema(
     {
@@ -16,7 +17,7 @@ var userSchema = new mongoose.Schema(
             required: true,
             unique: true,
         },
-        mobile: {
+        phone: {
             type: String,
             required: true,
             unique: true,
@@ -29,11 +30,17 @@ var userSchema = new mongoose.Schema(
             type: String,
             default: "user",
         },
-        cart: {
+        cart: [
+            {
+                product: { type: mongoose.Types.ObjectId, ref: "Product" },
+                quantity: Number,
+                color: String,
+            },
+        ],
+        address: {
             type: Array,
             default: [],
         },
-        address: [{ type: mongoose.Types.ObjectId, ref: "Address" }],
         wishlist: [{ type: mongoose.Types.ObjectId, ref: "Product" }],
         isBlocked: {
             type: Boolean,
@@ -67,9 +74,18 @@ userSchema.pre("save", async function (next) {
 
 // Check password
 userSchema.methods = {
-    isCorrectPassword: async function(password) {
+    isCorrectPassword: async function (password) {
         return bcrypt.compare(password, this.password);
-    }
-}
+    },
+    createPasswordChangedToken: function () {
+        const resetToken = crypto.randomBytes(32).toString("hex");
+        this.passwordResetToken = crypto
+            .createHash("sha256")
+            .update(resetToken)
+            .digest("hex");
+        this.passwordResetExpires = Date.now() + 15 * 60 * 1000;
+        return resetToken;
+    },
+};
 //Export the model
 module.exports = mongoose.model("User", userSchema);
