@@ -8,18 +8,15 @@ router.post(
     isAdmin,
     productCategoryController.createProductCategory
 );
-router.get(
-    "/",
-    productCategoryController.getProductCategories
-);
+router.get("/", productCategoryController.getProductCategories);
 router.put(
-    "/:bcid",
+    "/:pcid",
     verifyAccessToken,
     isAdmin,
     productCategoryController.updateProductCategory
 );
 router.delete(
-    "/:bcid",
+    "/:pcid",
     verifyAccessToken,
     isAdmin,
     productCategoryController.deleteProductCategory

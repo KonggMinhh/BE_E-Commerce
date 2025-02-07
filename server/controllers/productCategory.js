@@ -33,7 +33,9 @@ const updateProductCategory = asyncHandler(async (req, res) => {
 // Delete product category
 const deleteProductCategory = asyncHandler(async (req, res) => {
     const { pcid } = req.params;
+    console.log(pcid);
     const response = await ProductCategory.findByIdAndDelete(pcid);
+    console.log(response);
     return res.status(200).json({
         success: response ? true : false,
         deletedCategory: response ? response : "Cannot delete product category",
